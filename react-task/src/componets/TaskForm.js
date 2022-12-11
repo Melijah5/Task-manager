@@ -1,44 +1,32 @@
 
-import React, {useEffect , useState } from 'react'
-
+import React, { useEffect, useState, useRef } from 'react'
 
 function TaskForm() {
 
     const [task , setTask] = useState('')
-    
-   
-    useEffect(()=>{
-        fetch( 'http://localhost:5000/tasks')
-        .then((res) => res.json())
-            .then((data) => {
-                setTask(() => data.result);
-            });
 
-        },[] )
-        
-    
-    console.log(task)
+    const inputRef = useRef(null)
 
- async function addTaskHandler(e) {
-     e.preventDefault();
-    const response = await fetch(
-        'http://localhost:5000/task',
-        {
-            method: "POST",
-            body: JSON.stringify(e),
-            headers: {
-                "Content-Type": "application/json",
-            },
-        }
-    );
-    const data = await response.json();
-    console.log(data);
-}
+    // To focus current text box
+    useEffect(() => {
+        inputRef.current.focus()
+    })
 
-    // const handleSubmit = e=>{
-    //     e.preventDefault();
-        
-    // }
+    // useEffect(()=>{
+    //     fetch( 'http://localhost:5000/tasks')
+    //     .then((res) => res.json())
+    //         .then((data) => {
+    //             setTask(() => data.result);
+    //         });
+    //     },[] )
+    // console.log(task)
+
+
+    const handleSubmit = e => {
+        e.preventDefault();
+    }
+
+
     const handleChange  = e =>{
         setTask(e.target.value)
     }
@@ -48,18 +36,21 @@ function TaskForm() {
 
     return (
         <div>
+            <form className="task-form" action="http://localhost:3001/task" onSubmit={handleSubmit} method='POST'>
 
-            <form className="task-form" action="http://localhost:5000/task" onSubmit={addTaskHandler}>
                 <h4>task manager</h4>
+
                 <div className="form-control">
-                    <input type="text" 
+                    <input 
+                    type="text" 
                     name="name" 
-                    // value={}
+                    value={task}
                     className="task-input" 
                     placeholder="e.g. learn Nodejs" 
                     onChange={handleChange}
+                    ref={inputRef}
                     />
-                    <button type="submit" className="btn submit-btn">submit</button>
+                    <button className="btn submit-btn">submit</button>
                 </div>
                 <div className="form-alert"></div>
             </form>
